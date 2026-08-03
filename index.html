@@ -1,73 +1,76 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
-    <head>
-        <meta content='yQigN6Y2hMkyqXraxrlb9k2KJJs6It0Sq0oZQw8xQrM' name='google-site-verification'/>
-        <meta content='width=device-width, initial-scale=1.0' name='viewport'/>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="google-site-verification" content="yQigN6Y2hMkyqXraxrlb9k2KJJs6It0Sq0oZQw8xQrM"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Vagas Click</title>
 
-        <link crossorigin='anonymous' href='https://script.google.com' rel='preconnect'/>
-        <link crossorigin='anonymous' href='https://script.googleusercontent.com' rel='preconnect'/>
+    <link rel="preconnect" href="https://script.google.com" crossorigin="anonymous"/>
+    <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin="anonymous"/>
 
-        <b:include data='blog' name='all-head-content'/>
-        <title><data:blog.pageTitle/></title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #f8f9fa;
+        font-family: sans-serif;
+      }
 
-        <b:skin><![CDATA[
-          html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #f8f9fa;
-            font-family: sans-serif;
-          }
+      /* Tela de Carregamento */
+      #loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
 
-          /* Tela de Carregamento */
-          #loader {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-          }
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
 
-          .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-          }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
 
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
+      #custom-iframe {
+        width: 100%;
+        height: 100vh;
+        border: none;
+        display: block;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+    </style>
+</head>
+<body>
 
-          #custom-iframe {
-            width: 100%;
-            height: 100vh;
-            border: none;
-            display: block;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-          }
-        ]]></b:skin>
-    </head>
-    <body>
-      <b:section id='rss'/>
-      
-      <!-- Indicador de Carga -->
-      <div id='loader'>
-        <div class='spinner'/>
-        <p style='margin-top: 15px; color: #555;'>Carregando vagas...</p>
-      </div>
+  <!-- Indicador de Carga -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <p style="margin-top: 15px; color: #555;">Carregando vagas...</p>
+  </div>
 
-      <iframe id='custom-iframe' onload='document.getElementById(&apos;loader&apos;).style.display=&apos;none&apos;; this.style.opacity=&apos;1&apos;;' src='https://script.google.com/macros/s/AKfycbydewaAX43MLDRoJP8AAu8PXl8-765clRFX2kHNE4ZG2XGhDzMqNZ45bFr_BsouAaVxQg/exec' title='Vagas Click'/>
-    </body>
+  <iframe 
+    id="custom-iframe" 
+    src="https://script.google.com/macros/s/AKfycbydewaAX43MLDRoJP8AAu8PXl8-765clRFX2kHNE4ZG2XGhDzMqNZ45bFr_BsouAaVxQg/exec" 
+    title="Vagas Click"
+    onload="document.getElementById('loader').style.display='none'; this.style.opacity='1';">
+  </iframe>
+
+</body>
 </html>
