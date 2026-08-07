@@ -3,52 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Portal de vagas de emprego - encontre as melhores oportunidades profissionais." />
+  <meta name="description" content="Portal de vagas de emprego - encontre as melhores oportunidades." />
   <meta name="theme-color" content="#2563eb" />
-
-  <!-- Pré-conexão para acelerar carregamento do iframe -->
-  <link rel="preconnect" href="https://script.google.com" crossorigin />
-  <link rel="dns-prefetch" href="https://script.google.com" />
-
-  <!-- Open Graph (compartilhamento social) -->
-  <meta property="og:title" content="Portal de Vagas de Emprego" />
-  <meta property="og:description" content="Encontre as melhores oportunidades profissionais." />
-  <meta property="og:type" content="website" />
-
   <title>Portal de Vagas de Emprego</title>
 
   <style>
     :root {
       --bg: #f8fafc;
-      --card: #ffffff;
       --text: #1e293b;
       --text-muted: #64748b;
       --border: #e2e8f0;
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
-      --error: #dc2626;
-      --success: #16a34a;
     }
 
     @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0f172a;
-        --card: #1e293b;
-        --text: #f1f5f9;
-        --text-muted: #94a3b8;
-        --border: #334155;
-      }
+      :root { --bg: #0f172a; --text: #f1f5f9; --text-muted: #94a3b8; --border: #334155; }
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg);
@@ -56,85 +32,201 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Overlay (loading e error) */
     .overlay {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background-color: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       z-index: 9999;
-      transition: opacity 0.4s ease, visibility 0.4s ease;
+      transition: opacity .4s ease, visibility .4s ease;
     }
 
-    .overlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+    .overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
     .overlay-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 24px;
-      max-width: 400px;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 24px; max-width: 440px;
     }
 
-    /* Logo / Ícone da marca */
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 28px;
-    }
+    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
 
     .brand-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-size: 20px;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 20px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, .3);
     }
 
-    .brand-name {
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--text);
-    }
+    .brand-name { font-size: 20px; font-weight: 600; }
 
-    /* Spinner */
     .spinner {
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       border: 3px solid var(--border);
       border-top-color: var(--primary);
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: spin .8s linear infinite;
       margin-bottom: 20px;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .overlay-title { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+    .overlay-subtitle { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 18px; border-radius: 8px;
+      font-size: 14px; font-weight: 500; font-family: inherit;
+      cursor: pointer; text-decoration: none;
+      transition: background-color .2s ease, transform .1s ease;
+      border: 1px solid transparent;
+    }
+    .btn:active { transform: scale(.98); }
+
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+    .btn-ghost:hover { background: rgba(100, 116, 139, .1); }
+
+    .hint {
+      margin-top: 20px; font-size: 12px; color: var(--text-muted);
+      background: rgba(100, 116, 139, .08);
+      border: 1px solid var(--border);
+      padding: 10px 14px; border-radius: 8px; line-height: 1.6;
     }
 
-    .overlay-title {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 8px;
+    /* Pílula flutuante (fica visível se o usuário escolher continuar aguardando) */
+    .pill {
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 10000;
+      background: var(--primary); color: #fff;
+      padding: 10px 18px; border-radius: 999px;
+      font-size: 13px; font-weight: 600; text-decoration: none;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, .4);
     }
+    .pill.hidden { display: none; }
 
-    .overlay-subtitle {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-      line-height:
+    iframe { width: 100%; height: 100vh; border: none; display: block; background: #fff; }
+
+    noscript { display: block; padding: 24px; text-align: center; color: #dc2626; }
+  </style>
+</head>
+<body>
+
+  <!-- Estado 1: carregando -->
+  <div id="loading" class="overlay" role="status" aria-live="polite">
+    <div class="overlay-content">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">V</div>
+        <h1 class="brand-name">Portal de Vagas</h1>
+      </div>
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="overlay-title">Carregando o portal...</div>
+      <div class="overlay-subtitle">Estamos preparando as vagas para você.</div>
+    </div>
+  </div>
+
+  <!-- Estado 2: demorou demais / foi bloqueado -->
+  <div id="stuck" class="overlay hidden" role="alert">
+    <div class="overlay-content">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">V</div>
+        <h1 class="brand-name">Portal de Vagas</h1>
+      </div>
+      <div class="overlay-title">O conteúdo não carregou</div>
+      <div class="overlay-subtitle">
+        Isso pode acontecer se o navegador bloqueou o conteúdo<br />(protetores de anúncio / Brave Shields) ou se a conexão caiu.
+      </div>
+      <div class="actions">
+        <button id="retryBtn" class="btn btn-primary" type="button">↻ Tentar novamente</button>
+        <a id="openTabBtn" class="btn btn-ghost" target="_blank" rel="noopener" href="#">Abrir em nova aba</a>
+        <button id="waitBtn" class="btn btn-ghost" type="button">Continuar aguardando</button>
+      </div>
+      <div class="hint">
+        💡 Usa <strong>Brave</strong>? Toque no ícone do leão na barra de endereço e<br />
+        desative os <strong>Shields</strong> para este site. Depois clique em "Tentar novamente".
+      </div>
+    </div>
+  </div>
+
+  <!-- Pílula de emergência -->
+  <a id="pill" class="pill hidden" target="_blank" rel="noopener" href="#">Abrir em nova aba ↗</a>
+
+  <noscript>Este portal requer JavaScript habilitado.</noscript>
+
+  <iframe
+    id="appFrame"
+    src="https://script.google.com/macros/s/AKfycbydewaAX43MLDRoJP8AAu8PXl8-765clRFX2kHNE4ZG2XGhDzMqNZ45bFr_BsouAaVxQg/exec"
+    title="Aplicativo do Portal de Vagas">
+  </iframe>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var iframe   = document.getElementById('appFrame');
+      var loading  = document.getElementById('loading');
+      var stuck    = document.getElementById('stuck');
+      var pill     = document.getElementById('pill');
+      var APP_URL  = iframe.getAttribute('src');
+      var WAIT_MS  = 15000; // 15 segundos
+      var ready    = false;
+      var timer    = null;
+
+      // Links de "nova aba" apontando para o app
+      document.getElementById('openTabBtn').href = APP_URL;
+      pill.href = APP_URL;
+
+      function markReady() {
+        if (ready) return;
+        ready = true;
+        clearTimeout(timer);
+        loading.classList.add('hidden');
+        stuck.classList.add('hidden');
+        pill.classList.add('hidden');
+      }
+
+      // ✅ HANDSHAKE: só esconde o loading quando o app confirmar que renderizou
+      window.addEventListener('message', function (e) {
+        var originOk =
+          e.origin === 'https://script.google.com' ||
+          e.origin.indexOf('.googleusercontent.com') !== -1;
+        if (originOk && e.data && e.data.type === 'VAGASCLICK_READY') {
+          markReady();
+        }
+      });
+
+      function startWaiting() {
+        ready = false;
+        clearTimeout(timer);
+        loading.classList.remove('hidden');
+        stuck.classList.add('hidden');
+        timer = setTimeout(function () {
+          if (!ready) {
+            loading.classList.add('hidden');
+            stuck.classList.remove('hidden');
+          }
+        }, WAIT_MS);
+      }
+
+      document.getElementById('retryBtn').addEventListener('click', function () {
+        stuck.classList.add('hidden');
+        pill.classList.add('hidden');
+        iframe.src = APP_URL + (APP_URL.indexOf('?') === -1 ? '?' : '&') + 't=' + Date.now();
+        startWaiting();
+      });
+
+      document.getElementById('waitBtn').addEventListener('click', function () {
+        stuck.classList.add('hidden');
+        pill.classList.remove('hidden'); // mantém uma saída visível na tela
+      });
+
+      startWaiting();
+    })();
+  </script>
+
+</body>
+</html>
