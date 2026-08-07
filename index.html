@@ -114,6 +114,13 @@
     noscript { display: block; padding: 24px; text-align: center; color: #dc2626; }
   </style>
 </head>
+  <script>
+  window.addEventListener('load', function () {
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'VAGASCLICK_READY' }, '*');
+    }
+  });
+</script>
 <body>
 
   <!-- Estado 1: carregando -->
