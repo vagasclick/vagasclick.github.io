@@ -98,7 +98,7 @@
       padding: 10px 14px; border-radius: 8px; line-height: 1.6;
     }
 
-    /* Pílula flutuante (fica visível se o usuário escolher continuar aguardando) */
+    /* Botão discreto no rodapé (some sozinho após alguns segundos) */
     .pill {
       position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
       z-index: 10000;
@@ -106,8 +106,9 @@
       padding: 10px 18px; border-radius: 999px;
       font-size: 13px; font-weight: 600; text-decoration: none;
       box-shadow: 0 6px 20px rgba(37, 99, 235, .4);
+      transition: opacity .4s ease;
     }
-    .pill.hidden { display: none; }
+    .pill.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
     iframe { width: 100%; height: 100vh; border: none; display: block; background: #fff; }
 
@@ -116,7 +117,7 @@
 </head>
 <body>
 
-  <!-- Estado 1: carregando -->
+  <!-- Tela de carregamento -->
   <div id="loading" class="overlay" role="status" aria-live="polite">
     <div class="overlay-content">
       <div class="brand">
@@ -129,7 +130,7 @@
     </div>
   </div>
 
-  <!-- Estado 2: demorou demais / foi bloqueado -->
+  <!-- Tela de ajuda (só aparece se o iframe nunca carregar) -->
   <div id="stuck" class="overlay hidden" role="alert">
     <div class="overlay-content">
       <div class="brand">
@@ -138,22 +139,18 @@
       </div>
       <div class="overlay-title">O conteúdo não carregou</div>
       <div class="overlay-subtitle">
-        Isso pode acontecer se o navegador bloqueou o conteúdo<br />(protetores de anúncio / Brave Shields) ou se a conexão caiu.
+        Verifique sua conexão com a internet.<br />
+        Se usar Brave ou bloqueador de anúncios, desative-o para este site.
       </div>
       <div class="actions">
         <button id="retryBtn" class="btn btn-primary" type="button">↻ Tentar novamente</button>
         <a id="openTabBtn" class="btn btn-ghost" target="_blank" rel="noopener" href="#">Abrir em nova aba</a>
-        <button id="waitBtn" class="btn btn-ghost" type="button">Continuar aguardando</button>
-      </div>
-      <div class="hint">
-        💡 Usa <strong>Brave</strong>? Toque no ícone do leão na barra de endereço e<br />
-        desative os <strong>Shields</strong> para este site. Depois clique em "Tentar novamente".
       </div>
     </div>
   </div>
 
-  <!-- Pílula de emergência -->
-  <a id="pill" class="pill hidden" target="_blank" rel="noopener" href="#">Abrir em nova aba ↗</a>
+  <!-- Saída discreta para tela branca -->
+  <a id="pill" class="pill hidden" target="_blank" rel="noopener" href="#">Não carregou? Abrir em nova aba ↗</a>
 
   <noscript>Este portal requer JavaScript habilitado.</noscript>
 
@@ -167,66 +164,46 @@
     (function () {
       'use strict';
 
-      var iframe   = document.getElementById('appFrame');
-      var loading  = document.getElementById('loading');
-      var stuck    = document.getElementById('stuck');
-      var pill     = document.getElementById('pill');
-      var APP_URL  = iframe.getAttribute('src');
-      var WAIT_MS  = 15000; // 15 segundos
-      var ready    = false;
-      var timer    = null;
+      var iframe  = document.getElementById('appFrame');
+      var loading = document.getElementById('loading');
+      var stuck   = document.getElementById('stuck');
+      var pill    = document.getElementById('pill');
 
-      // Links de "nova aba" apontando para o app
+      var APP_URL = iframe.getAttribute('src');
+      var WAIT_MS = 20000;  // tempo máximo até mostrar a tela de ajuda
+      var PILL_MS = 10000;  // tempo que o botão do rodapé fica visível
+
+      var ready = false;
+      var waitTimer = null;
+      var pillTimer = null;
+
       document.getElementById('openTabBtn').href = APP_URL;
       pill.href = APP_URL;
+
+      function showPill(ms) {
+        clearTimeout(pillTimer);
+        pill.classList.remove('hidden');
+        pillTimer = setTimeout(function () {
+          pill.classList.add('hidden');
+        }, ms);
+      }
 
       function markReady() {
         if (ready) return;
         ready = true;
-        clearTimeout(timer);
+        clearTimeout(waitTimer);
         loading.classList.add('hidden');
         stuck.classList.add('hidden');
-        pill.classList.add('hidden');
+        // Se o navegador bloqueou o conteúdo (tela branca), o usuário tem uma saída
+        showPill(PILL_MS);
       }
 
-      // ✅ HANDSHAKE: só esconde o loading quando o app confirmar que renderizou
-      window.addEventListener('message', function (e) {
-        var originOk =
-          e.origin === 'https://script.google.com' ||
-          e.origin.indexOf('.googleusercontent.com') !== -1;
-        if (originOk && e.data && e.data.type === 'VAGASCLICK_READY') {
-          markReady();
-        }
-      });
+      // Comportamento clássico: esconde o loading assim que o iframe carrega
+      iframe.addEventListener('load', markReady);
 
       function startWaiting() {
         ready = false;
-        clearTimeout(timer);
-        loading.classList.remove('hidden');
-        stuck.classList.add('hidden');
-        timer = setTimeout(function () {
-          if (!ready) {
-            loading.classList.add('hidden');
-            stuck.classList.remove('hidden');
-          }
-        }, WAIT_MS);
-      }
-
-      document.getElementById('retryBtn').addEventListener('click', function () {
-        stuck.classList.add('hidden');
+        clearTimeout(waitTimer);
+        clearTimeout(pillTimer);
         pill.classList.add('hidden');
-        iframe.src = APP_URL + (APP_URL.indexOf('?') === -1 ? '?' : '&') + 't=' + Date.now();
-        startWaiting();
-      });
-
-      document.getElementById('waitBtn').addEventListener('click', function () {
-        stuck.classList.add('hidden');
-        pill.classList.remove('hidden'); // mantém uma saída visível na tela
-      });
-
-      startWaiting();
-    })();
-  </script>
-
-</body>
-</html>
+        loading.classList.remove
